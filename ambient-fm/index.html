@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="AM-FM: the first foundation model for ambient intelligence through WiFi CSI, pre-trained on 9.2M samples with contrastive learning, masked reconstruction, and physics-informed objectives.">
+  <meta name="description" content="AmbientFM: the first foundation model for ambient intelligence through WiFi CSI, pre-trained on 9.2M samples with contrastive learning, masked reconstruction, and physics-informed objectives.">
   <meta name="keywords" content="WiFi, CSI, foundation model, ambient intelligence, self-supervised learning, wireless sensing">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AM-FM: A Foundation Model for Ambient Intelligence Through WiFi</title>
+  <title>AmbientFM: A Foundation Model for Ambient Intelligence Through WiFi</title>
 
   <link rel="icon" href="static/images/your-icon.png">
 
@@ -26,11 +26,11 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title is-bold">
-            AM-FM: A Foundation Model for Ambient Intelligence Through WiFi
+            AmbientFM: A Foundation Model for Ambient Intelligence Through WiFi
           </h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
-              Guozhen Zhu, Yuqian Hu, Sakila Jayaweera, Weihang Gao, Wei-Hsiang Wang, Jiaxuan Zhang,
+              Guozhen Zhu, Anonymous, Sakila Jayaweera, Weihang Gao, Wei-Hsiang Wang, Jiaxuan Zhang,
               Beibei Wang, Chenshu Wu, K. J. Ray Liu
             </span>
           </div>
@@ -82,9 +82,9 @@
         <div id="results-carousel" class="carousel results-carousel">
           <div class="box m-5">
             <div class="content has-text-centered">
-              <img src="static/images/concept_figure.PNG" alt="AM-FM overview: foundation model for WiFi ambient intelligence" width="84%"/>
+              <img src="static/images/concept_figure.PNG" alt="AmbientFM overview: foundation model for WiFi ambient intelligence" width="84%"/>
               <p>
-                <strong>AM-FM</strong> (Ambient Model — Foundation Model) is pre-trained on large-scale unlabeled WiFi CSI with contrastive learning, masked reconstruction, and physics-informed objectives, then adapted to diverse downstream sensing tasks with parameter-efficient fine-tuning.
+                <strong>AmbientFM</strong> (Ambient Model — Foundation Model) is pre-trained on large-scale unlabeled WiFi CSI with contrastive learning, masked reconstruction, and physics-informed objectives, then adapted to diverse downstream sensing tasks with parameter-efficient fine-tuning.
               </p>
             </div>
           </div>
@@ -104,10 +104,10 @@
             Ambient intelligence—continuously understanding human presence, activity, and physiology in physical spaces—is central to smart environments, health monitoring, and human–computer interaction. WiFi offers a ubiquitous, always-on, privacy-preserving sensing substrate through billions of IoT devices. Yet wireless sensing has often relied on <em>task-specific</em> models that need substantial labeled data and are hard to deploy broadly.
           </p>
           <p>
-            We present <strong>AM-FM</strong>, to our knowledge the <strong>first foundation model for ambient intelligence through WiFi</strong>. AM-FM learns general-purpose CSI representations via <strong>contrastive learning</strong>, <strong>masked reconstruction</strong>, and <strong>physics-informed</strong> objectives suited to wireless propagation and multipath structure. The design includes adaptive frequency aggregation for heterogeneous subcarrier quality and relative temporal encoding for translation-invariant activity patterns.
+            We present <strong>AmbientFM</strong>, to our knowledge the <strong>first foundation model for ambient intelligence through WiFi</strong>. AmbientFM learns general-purpose CSI representations via <strong>contrastive learning</strong>, <strong>masked reconstruction</strong>, and <strong>physics-informed</strong> objectives suited to wireless propagation and multipath structure. The design includes adaptive frequency aggregation for heterogeneous subcarrier quality and relative temporal encoding for translation-invariant activity patterns.
           </p>
           <p>
-            Evaluated on <strong>public benchmarks spanning nine downstream tasks</strong>, AM-FM shows strong cross-task performance and improved <strong>data efficiency</strong>, supporting the view that foundation-style pre-training can scale ambient intelligence on existing WiFi infrastructure.
+            Evaluated on <strong>public benchmarks spanning nine downstream tasks</strong>, AmbientFM shows strong cross-task performance and improved <strong>data efficiency</strong>, supporting the view that foundation-style pre-training can scale ambient intelligence on existing WiFi infrastructure.
           </p>
         </div>
       </div>
@@ -122,7 +122,7 @@
         <h2 class="title is-3">Pre-training data</h2>
         <div class="content has-text-justified">
           <p>
-            AM-FM is pre-trained on <strong>9.2 million</strong> unlabeled CSI samples collected over <strong>439 days</strong>, using <strong>20 commercial device types</strong> across <strong>8 chipset families</strong>, <strong>11 real-world environments</strong>, and <strong>26 users</strong>, capturing diverse hardware, environments, and activities.
+            AmbientFM is pre-trained on <strong>9.2 million</strong> unlabeled CSI samples collected over <strong>439 days</strong>, using <strong>20 commercial device types</strong> across <strong>8 chipset families</strong>, <strong>11 real-world environments</strong>, and <strong>26 users</strong>, capturing diverse hardware, environments, and activities.
           </p>
           <p class="is-size-7">
             Downstream evaluation uses established public WiFi sensing benchmarks (nine tasks); see the paper for per-task protocols and metrics.
@@ -154,8 +154,8 @@
   <div class="container is-max-desktop content">
     <h2 class="title is-3 has-text-centered">BibTeX</h2>
     <pre><code>@article{zhu2026amfm,
-  title   = {{AM-FM}: A Foundation Model for Ambient Intelligence Through {WiFi}},
-  author  = {Zhu, Guozhen and Hu, Yuqian and Jayaweera, Sakila and Gao, Weihang and Wang, Wei-Hsiang and Zhang, Jiaxuan and Wang, Beibei and Wu, Chenshu and Liu, K. J. Ray},
+  title   = {{AmbientFM}: A Foundation Model for Ambient Intelligence Through {WiFi}},
+  author  = {Zhu, Guozhen and Anonymous and Jayaweera, Sakila and Gao, Weihang and Wang, Wei-Hsiang and Zhang, Jiaxuan and Wang, Beibei and Wu, Chenshu and Liu, K. J. Ray},
   journal = {arXiv preprint arXiv:2602.11200},
   year    = {2026}
 }</code></pre>
