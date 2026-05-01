@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="AmbientFM is the first foundation model for ambient sensing via WiFi CSI—pre-trained on 9.2M real-world samples with contrastive learning, masked reconstruction, and physics-informed objectives; evaluated on nine public downstream tasks.">
+  <meta name="description" content="AmbientFM is a WiFi sensing foundation model trained on 9.2M real-world CSI samples with simple self-training goals (contrast, masked fill-in, and physics hints). We test it on nine public tasks.">
   <meta name="keywords" content="WiFi, CSI, foundation model, ambient sensing, self-supervised learning, wireless sensing, NeurIPS">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AmbientFM: A Foundation Model for Ambient Sensing</title>
@@ -40,7 +40,7 @@
             <a class="tag is-light" href="#framework">Framework</a>
             <a class="tag is-light" href="#method">Method</a>
             <a class="tag is-light" href="#data">Pre-training data</a>
-            <a class="tag is-light" href="#evaluation">Evaluation</a>
+            <a class="tag is-light" href="#evaluation">Tasks we test</a>
             <a class="tag is-light" href="#results">Results</a>
             <a class="tag is-light" href="#deployment">Deployment</a>
           </div>
@@ -56,15 +56,15 @@
             </div>
             <div class="stat-card">
               <div class="value">~20 TB</div>
-              <div class="label">Raw CSI corpus</div>
+              <div class="label">Raw CSI data</div>
             </div>
             <div class="stat-card">
               <div class="value">9</div>
-              <div class="label">Downstream tasks</div>
+              <div class="label">Test tasks</div>
             </div>
             <div class="stat-card">
               <div class="value">5M</div>
-              <div class="label">Base encoder params</div>
+              <div class="label">Base model size</div>
             </div>
           </div>
 
@@ -88,10 +88,10 @@
     <h2 class="title is-4 section-heading has-text-centered mb-5">Abstract</h2>
     <div class="abstract-box content has-text-justified">
       <p>
-        Ambient intelligence—continuously understanding human presence, activity, and physiology in physical spaces—is fundamental to smart environments, health monitoring, and human–computer interaction. WiFi infrastructure provides a ubiquitous, privacy-preserving substrate for this capability across billions of IoT devices, yet wireless sensing has typically relied on <strong>task-specific models</strong> that need substantial labeled data and limit deployment.
+        Smart spaces need to sense people—whether someone is present, what they are doing, and basic body signals—without cameras. WiFi is everywhere, keeps visual privacy, and runs on billions of devices. Still, most WiFi sensing uses <strong>one-off models</strong> built for a single job; they need lots of labels and do not reuse what was learned before.
       </p>
       <p class="mb-0">
-        We present <strong>AmbientFM</strong>, the first foundation model for ambient intelligence and sensing through WiFi. AmbientFM is pre-trained on <strong>9.2 million</strong> unlabeled channel state information (CSI) samples collected over <strong>439 days</strong> from <strong>20 commercial device types</strong> deployed worldwide, using <strong>contrastive learning</strong>, <strong>masked reconstruction</strong>, and <strong>physics-informed</strong> objectives tailored to wireless signals. On public benchmarks spanning <strong>nine downstream tasks</strong>, AmbientFM achieves strong cross-task performance with improved <strong>data efficiency</strong>, showing that foundation models can scale ambient sensing on existing wireless infrastructure.
+        We present <strong>AmbientFM</strong>, a single large WiFi model trained first on unlabeled data, then tuned for many sensing jobs. It learns from <strong>9.2 million</strong> channel state information (CSI) samples gathered over <strong>439 days</strong> on <strong>20 kinds</strong> of everyday devices around the world. Training mixes three signal-aware goals: <strong>contrastive learning</strong> (tell similar windows apart), <strong>masked reconstruction</strong> (fill in missing parts), and a <strong>physics-style</strong> autocorrelation task. On <strong>nine public test sets</strong>, one backbone reaches strong scores and needs <strong>fewer labels</strong> than training from scratch—showing WiFi sensing can share one base model like language or vision do.
       </p>
     </div>
   </div>
@@ -103,18 +103,18 @@
     <div class="columns is-variable is-8">
       <div class="column content has-text-justified">
         <p>
-          WiFi CSI captures how signals propagate through indoor environments: motion and physiology modulate channel responses <em>without</em> cameras or wearables. Commodity hardware already produces massive unlabeled CSI streams, but prior work mostly trains <strong>separate specialized models</strong> per task, so knowledge does not transfer and labeled data must be collected again for each application.
+          WiFi CSI records how radio waves bounce around a room: people moving or breathing change the channel <em>without</em> cameras or wearables. Regular routers and IoT gear already stream CSI, but past work mostly trains <strong>a new model for each task</strong>, so nothing carries over and you label data again for every app.
         </p>
         <p>
-          AmbientFM targets <strong>general-purpose CSI representations</strong> learned from diverse in-the-wild data. The encoder combines <strong>adaptive frequency aggregation</strong> (cross-attention over heterogeneous subcarriers), a <strong>transformer backbone</strong> with <strong>relative temporal position bias</strong>, and three complementary self-supervised losses that reflect multipath structure, packet loss, and temporal periodicities in real propagation.
+          AmbientFM learns <strong>CSI features that work for many tasks</strong> from messy real-home data. The network mixes <strong>adaptive frequency pooling</strong> (learn which subcarriers matter on mixed hardware), a <strong>transformer</strong> with <strong>relative time offsets</strong>, and three training losses that match real WiFi quirks: many reflected paths, dropped packets, and repeating motion patterns.
         </p>
       </div>
       <div class="column content has-text-justified">
         <p>
-          Downstream adaptation uses either a frozen encoder with a lightweight <strong>temporal probe</strong> (1-layer LSTM + head) or <strong>bottleneck adapters</strong> (~393K trainable parameters, &lt;8% of encoder size) inserted in each transformer layer—both paired with the same temporal classifier for fair comparison.
+          For each task you either <strong>freeze</strong> the encoder and train a small <strong>LSTM + classifier head</strong>, or keep the encoder frozen and add thin <strong>bottleneck adapters</strong> (~393K weights, under 8% of the encoder) in every transformer block. Both use the same time-based classifier so numbers stay comparable.
         </p>
         <p class="is-size-7 has-text-grey mb-0">
-          Compared to training the same architecture <strong>from scratch</strong>, pre-training helps most on tasks that require <strong>cross-environment invariance</strong> (for example human activity recognition, localization, occupancy, and proximity), while highly discriminative tasks such as user identification already achieve strong performance with limited labels.
+          Compared with the same network trained <strong>from random weights</strong>, pre-training helps most when the job must work across <strong>different rooms and homes</strong> (activity, where you are, occupancy, distance). Jobs with very strong fingerprints, like telling users apart, already score well with little data even without pre-training.
         </p>
       </div>
     </div>
@@ -125,12 +125,12 @@
   <div class="container is-max-desktop">
     <h2 class="title is-4 section-heading has-text-centered mb-2">Framework</h2>
     <p class="has-text-centered has-text-grey mb-5 is-size-6">
-      Continuous CSI collection → WiFi-aware self-supervised pre-training → parameter-efficient adaptation to diverse sensing tasks.
+      Always-on CSI logging → WiFi-aware self-training on unlabeled windows → small task-specific heads or adapters for each sensing job.
     </p>
     <div class="figure-panel has-text-centered">
-      <img src="static/images/concept_figure.PNG" alt="AmbientFM pipeline: distributed CSI collection, contrastive learning with masked reconstruction and physics-informed ACF prediction, then adaptation to tasks such as fall detection, localization, and activity recognition." width="92%" loading="lazy"/>
+      <img src="static/images/concept_figure.PNG" alt="AmbientFM: collect CSI in homes, train with contrast and fill-in losses plus autocorrelation, then add small heads for falls, location, activity, and more." width="92%" loading="lazy"/>
       <p class="is-size-7 has-text-grey mt-4 has-text-left content">
-        <strong>Figure (concept).</strong> Left: in-the-wild CSI from distributed IoT links. Center: pre-training with contrastive, reconstruction, and autocorrelation (ACF) objectives. Right: lightweight adapters or temporal probing for fall detection, localization, gesture recognition, imaging, and other tasks.
+        <strong>Figure (concept).</strong> Left: CSI from many home IoT links. Center: train without labels using contrast, fill-in reconstruction, and autocorrelation (ACF). Right: tiny adapters or a frozen encoder + LSTM for fall alerts, maps, gestures, imaging, and more.
       </p>
     </div>
   </div>
@@ -139,29 +139,16 @@
 <section class="section ambient-section alt" id="method">
   <div class="container is-max-desktop">
     <h2 class="title is-4 section-heading has-text-centered mb-5">Method</h2>
-    <div class="columns method-columns is-variable is-6">
-      <div class="column">
-        <div class="box content has-text-justified">
-          <h3 class="title is-5 mb-3">Architecture (Base)</h3>
+    <div class="columns is-centered">
+      <div class="column is-two-thirds">
+        <div class="box content has-text-justified mb-0">
+          <h3 class="title is-5 mb-4 has-text-centered">Self-supervised objectives</h3>
+          <p class="mb-4">Pre-training uses no human labels. Three losses run together on CSI windows:</p>
           <ul>
-            <li><strong>Adaptive frequency aggregation:</strong> cross-attention maps variable subcarriers to <strong>10</strong> latent frequency channels per spatial slice (~5–11× compression), emphasizing informative bins under heterogeneous fading and hardware.</li>
-            <li><strong>Temporal encoder:</strong> <strong>6-layer</strong> transformer, hidden size <strong>256</strong>, <strong>8</strong> heads, with <strong>learned relative position bias</strong> for translation-invariant activity patterns.</li>
-            <li><strong>Pre-training decoder:</strong> 3-layer transformer for reconstruction; segment shape after preprocessing is typically <strong>T = 500</strong> time steps and unified frequency bins (zero-padded to <strong>F<sub>max</sub></strong>).</li>
-            <li><strong>Scale:</strong> <strong>Small ~2M</strong>, <strong>Base ~5M</strong>, <strong>Large ~12M</strong> parameters; Base achieves the best overall transfer on the fixed 9.2M-sample corpus.</li>
+            <li><strong>Contrastive learning:</strong> pool over time, then pull matching pairs together and push others apart. We use nine <strong>WiFi-only input tweaks</strong> (noise, gain swings, time shift, frequency nudge/mask, crop, blur, …). Generic image-style crops and distortions hurt time-based tasks.</li>
+            <li><strong>Masked reconstruction:</strong> hide <strong>10%</strong> time chunks and <strong>10%</strong> frequency strips; the model must rebuild the <strong>full</strong> window so it learns how reflections tie frequencies together.</li>
+            <li><strong>Physics-style autocorrelation (ACF):</strong> predict the normalized autocorrelation of signal power over time so the model picks up breathing-, gait-, and gesture-like rhythms.</li>
           </ul>
-        </div>
-      </div>
-      <div class="column">
-        <div class="box content has-text-justified">
-          <h3 class="title is-5 mb-3">Self-supervised objectives</h3>
-          <ul>
-            <li><strong>Contrastive (NT-Xent):</strong> temporal pooling + projector; nine <strong>WiFi-specific augmentations</strong> (noise, gain-style modulation, temporal shift, frequency perturbation/mask, crop, blur, …)—standard image-style augmentations hurt temporal tasks.</li>
-            <li><strong>Masked reconstruction:</strong> masks <strong>10%</strong> temporal blocks and <strong>10%</strong> frequency bands; decoder reconstructs the <strong>full</strong> segment to capture multipath coherence.</li>
-            <li><strong>Physics-informed ACF:</strong> auxiliary prediction of normalized autocorrelation of per-timestep signal energy, aligning representations with periodic motion statistics.</li>
-          </ul>
-          <p class="is-size-7 has-text-grey mb-0">
-            Pre-processing uses CSI <strong>amplitude</strong>, fixed-length windows, per-segment min–max normalization, and HDF5 storage for heterogeneous devices (details in the paper).
-          </p>
         </div>
       </div>
     </div>
@@ -170,10 +157,10 @@
 
 <section class="section ambient-section" id="data">
   <div class="container is-max-desktop">
-    <h2 class="title is-4 section-heading has-text-centered mb-5">Pre-training corpus</h2>
+    <h2 class="title is-4 section-heading has-text-centered mb-5">Pre-training data</h2>
     <div class="content has-text-justified is-max-widescreen mx-auto">
       <p>
-        The pre-training set is collected <strong>24/7</strong> in residential settings with <strong>6–9 concurrent device links</strong> per environment, emphasizing realistic motion, occlusion, and interference (not scripted lab sessions only).
+        Data is logged <strong>24/7</strong> in real homes with <strong>6–9 live links</strong> per site so we catch everyday motion, furniture blocking paths, and neighbor WiFi—not only scripted lab walks.
       </p>
       <div class="columns is-multiline mt-4">
         <div class="column is-half">
@@ -193,7 +180,7 @@
             <ul class="mb-0">
               <li>Target <strong>100 Hz</strong> packet rate; streams below <strong>⅔</strong> of target rate are filtered.</li>
               <li>Devices screened with a MATLAB CSI verification workflow for timing stability, amplitude behavior, and motion sensitivity before large-scale logging.</li>
-              <li>Received power spread can exceed <strong>20 dB</strong> across configurations—motivating learned frequency weighting.</li>
+              <li>Received power can swing more than <strong>20 dB</strong> across setups, which is why learned frequency weights help.</li>
             </ul>
           </div>
         </div>
@@ -204,29 +191,29 @@
 
 <section class="section ambient-section alt" id="evaluation">
   <div class="container is-max-desktop">
-    <h2 class="title is-4 section-heading has-text-centered mb-5">Nine downstream tasks</h2>
+    <h2 class="title is-4 section-heading has-text-centered mb-5">Nine test tasks</h2>
     <p class="has-text-centered mb-5 has-text-grey">
-      Evaluated on public benchmarks: <strong>CSI-Bench</strong> (broad in-the-wild tasks), <strong>SignFi</strong> (276-class gestures), and <strong>WiFiCam</strong> (CSI–RGB imaging).
+      Public sets: <strong>CSI-Bench</strong> (many real-home tasks), <strong>SignFi</strong> (276 sign-language gestures), <strong>WiFiCam</strong> (WiFi + camera imaging).
     </p>
     <div class="columns is-multiline is-variable is-3">
       <div class="column is-half">
         <div class="box content is-small" style="border-radius:10px;">
-          <p class="task-category">Physiological</p>
-          <p><strong>Fall detection</strong> — acute events from transient channel disruptions.</p>
+          <p class="task-category">Health</p>
+          <p><strong>Fall detection</strong> — sudden falls vs normal motion.</p>
           <p class="task-category mt-3">Activity</p>
           <p><strong>Human activity recognition (HAR)</strong> · <strong>Motion source recognition (MSR)</strong> (human vs pet vs robot vs fan).</p>
-          <p class="task-category mt-3">Spatial reasoning</p>
-          <p><strong>Occupancy</strong> · <strong>Localization</strong> · <strong>Proximity</strong> (fine-grained distance classes).</p>
+          <p class="task-category mt-3">Space &amp; distance</p>
+          <p><strong>Occupancy</strong> · <strong>Localization</strong> · <strong>Proximity</strong> (distance buckets).</p>
         </div>
       </div>
       <div class="column is-half">
         <div class="box content is-small" style="border-radius:10px;">
-          <p class="task-category">Biometrics</p>
-          <p><strong>User identification (UID)</strong> from gait-like motion signatures.</p>
-          <p class="task-category mt-3">Fine-grained motion</p>
-          <p><strong>Gesture recognition</strong> — 276-way SignFi classification.</p>
-          <p class="task-category mt-3">Spatial reconstruction</p>
-          <p><strong>WiFi imaging</strong> — dense prediction; reported as <strong>SSIM / PSNR</strong> (not AUROC).</p>
+          <p class="task-category">Identity</p>
+          <p><strong>User identification (UID)</strong> — tell people apart from how they move.</p>
+          <p class="task-category mt-3">Small motions</p>
+          <p><strong>Gesture recognition</strong> — 276 SignFi classes.</p>
+          <p class="task-category mt-3">Images from WiFi</p>
+          <p><strong>WiFi imaging</strong> — dense image-like output; we report <strong>SSIM / PSNR</strong>, not AUROC.</p>
         </div>
       </div>
     </div>
@@ -235,9 +222,9 @@
 
 <section class="section ambient-section" id="results">
   <div class="container is-max-desktop">
-    <h2 class="title is-4 section-heading has-text-centered mb-2">Cross-task performance</h2>
+    <h2 class="title is-4 section-heading has-text-centered mb-2">Scores across tasks</h2>
     <p class="has-text-centered has-text-grey mb-5 is-size-7">
-      AUROC (95% bootstrap CI in paper). Imaging reported as SSIM / PSNR. Representative configuration: <strong>AmbientFM + bottleneck adapters (BA)</strong> vs same encoder trained <strong>from scratch</strong>.
+      Classification rows use AUROC (confidence intervals in the paper). Imaging uses SSIM / PSNR. We show <strong>AmbientFM + bottleneck adapters (BA)</strong> vs the same net trained <strong>from scratch</strong>.
     </p>
     <div class="results-table-wrap mb-5">
       <table class="table is-fullwidth is-striped mb-0">
@@ -297,7 +284,7 @@
     </div>
     <div class="content has-text-justified is-size-7 has-text-grey">
       <p>
-        With <strong>BA</strong>, AmbientFM exceeds <strong>0.90 AUROC</strong> on all eight classification tasks in the paper’s Table 1. <strong>Temporal probing</strong> is especially strong when classes are already well separated in embedding space (UID, MSR, localization). <strong>Few-shot</strong> curves (paper Fig. 2) show large gains on localization and proximity where scratch models remain near chance with limited labels. Ablations (paper Fig. 3) show both <strong>WiFi-tailored augmentations</strong> and the <strong>full three-part loss</strong> are important—dropping reconstruction or ACF hurts especially fall detection and HAR.
+        With <strong>BA</strong>, AmbientFM beats <strong>0.90 AUROC</strong> on all eight classification rows in Table 1. <strong>Frozen encoder + LSTM</strong> shines when classes are already far apart in feature space (UID, MSR, localization). With only a few labels per class (Fig. 2), pre-training lifts localization and proximity where scratch models stay near guessing. Fig. 3 turns pieces off one by one: both <strong>WiFi-only augmentations</strong> and the <strong>full three-loss mix</strong> matter—removing fill-in or ACF cuts fall and HAR the most.
       </p>
     </div>
   </div>
@@ -310,10 +297,10 @@
       <div class="column is-two-thirds">
         <div class="callout-edge content has-text-justified">
           <p class="mb-2">
-            The <strong>Base</strong> encoder (~<strong>5.57M</strong> parameters, ~<strong>21.3 MB</strong>) runs at about <strong>4.25 µs</strong> per sample and <strong>233k+</strong> samples/s on a commodity laptop CPU (<strong>AMD Ryzen 7 PRO 7840U</strong>) without a GPU—sufficient for real-time edge inference after adaptation.
+            The <strong>Base</strong> encoder (~<strong>5.57M</strong> weights, ~<strong>21.3 MB</strong>) runs about <strong>4.25 µs</strong> per CSI window and over <strong>233k</strong> windows/s on a normal laptop CPU (<strong>AMD Ryzen 7 PRO 7840U</strong>) with no GPU—enough for live use after a short task-specific tune.
           </p>
           <p class="is-size-7 mb-0 has-text-grey">
-            <strong>Limitations (summary):</strong> each task still needs a short adaptation stage; performance gains vary by task. Robustness degrades under sustained packet loss ≳50% or SNR below roughly 15 dB in the paper’s analysis. AmbientFM senses what is encoded in commodity CSI—not fine visual appearance.
+            <strong>Limits:</strong> each task still needs a short fine-tune; gains differ by task. Very heavy packet loss (around half of packets missing for long stretches) or SNR below ~15 dB hurts accuracy. The model only sees what WiFi CSI carries—not fine camera-level detail.
           </p>
         </div>
       </div>
@@ -326,9 +313,9 @@
     <h2 class="title is-4 section-heading has-text-centered mb-5">Contributions</h2>
     <div class="content has-text-justified is-max-widescreen mx-auto">
       <ol>
-        <li><strong>Foundation model for ambient sensing:</strong> First large-scale WiFi CSI foundation model aimed at ambient intelligence, with architecture matched to multipath and hardware heterogeneity.</li>
-        <li><strong>Real-world pre-training at scale:</strong> Nine complementary objectives and augmentations tailored to wireless physics, trained on the largest diverse in-the-wild CSI corpus described in the paper.</li>
-        <li><strong>Single backbone, nine tasks:</strong> Strong transfer and label efficiency across physiological, activity, spatial, biometric, gesture, and imaging tasks using shared representations and lightweight adaptation.</li>
+        <li><strong>One WiFi base model:</strong> A large CSI encoder built for real indoor reflections and mixed consumer hardware—not a one-task specialist.</li>
+        <li><strong>Real-world scale:</strong> Nine WiFi-specific input tweaks and three training losses, trained on the biggest mixed home CSI set we report.</li>
+        <li><strong>One backbone, nine jobs:</strong> Strong reuse and fewer labels across health alerts, activity, room cues, who-is-who, gestures, and imaging-style outputs with small add-on heads.</li>
       </ol>
     </div>
   </div>
