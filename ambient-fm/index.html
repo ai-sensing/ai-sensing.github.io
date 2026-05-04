@@ -30,9 +30,9 @@
           <p class="is-size-6 publication-authors mt-3">
             <span class="author-block">Anonymous authors</span>
           </p>
-          <p class="is-size-6 mt-2 has-text-grey">
+          <!-- <p class="is-size-6 mt-2 has-text-grey">
             <em>Under review at NeurIPS 2026</em>
-          </p>
+          </p> -->
 
           <div class="tags jump-tags are-medium mt-5 mb-4">
             <a class="tag is-light" href="#abstract">Abstract</a>
@@ -68,7 +68,7 @@
             </div>
           </div>
 
-          <div class="publication-links">
+          <!-- <div class="publication-links">
             <span class="link-block">
               <a href="#" class="external-link button is-normal is-rounded is-dark" title="Link coming soon">
                 <span class="icon"><i class="fab fa-github"></i></span>
@@ -76,7 +76,7 @@
               </a>
             </span>
           </div>
-          <p class="is-size-7 mt-3 has-text-grey">Code release will be updated when available.</p>
+          <p class="is-size-7 mt-3 has-text-grey">Code release will be updated when available.</p> -->
         </div>
       </div>
     </div>
@@ -113,7 +113,7 @@
         <p>
           For each task you either <strong>freeze</strong> the encoder and train a small <strong>LSTM + classifier head</strong>, or keep the encoder frozen and add thin <strong>bottleneck adapters</strong> (~393K weights, under 8% of the encoder) in every transformer block. Both use the same time-based classifier so numbers stay comparable.
         </p>
-        <p class="is-size-7 has-text-grey mb-0">
+        <p>
           Compared with the same network trained <strong>from random weights</strong>, pre-training helps most when the job must work across <strong>different rooms and homes</strong> (activity, where you are, occupancy, distance). Jobs with very strong fingerprints, like telling users apart, already score well with little data even without pre-training.
         </p>
       </div>
@@ -123,14 +123,11 @@
 
 <section class="section ambient-section" id="framework">
   <div class="container is-max-desktop">
-    <h2 class="title is-4 section-heading has-text-centered mb-2">Framework</h2>
-    <p class="has-text-centered has-text-grey mb-5 is-size-6">
-      Always-on CSI logging → WiFi-aware self-training on unlabeled windows → small task-specific heads or adapters for each sensing job.
-    </p>
+    <h2 class="title is-4 section-heading has-text-centered mb-5">Framework</h2>
     <div class="figure-panel has-text-centered">
-      <img src="static/images/concept_fm.png" alt="AmbientFM: collect CSI in homes, train with contrast and fill-in losses plus autocorrelation, then add small heads for falls, location, activity, and more." width="92%" loading="lazy"/>
+      <img src="static/images/concept_fm.png" alt="Figure 1: AmbientFM framework—CSI collection, self-supervised pre-training, and parameter-efficient task adaptation." width="92%" loading="lazy"/>
       <p class="is-size-7 has-text-grey mt-4 has-text-left content">
-        <strong>Figure (concept).</strong> Left: CSI from many home IoT links. Center: train without labels using contrast, fill-in reconstruction, and autocorrelation (ACF). Right: tiny adapters or a frozen encoder + LSTM for fall alerts, maps, gestures, imaging, and more.
+        <strong>Figure 1: AmbientFM framework.</strong> (Left) Continuous CSI collection from distributed IoT devices. (Center) Self-supervised pre-training with contrastive learning, masked reconstruction, and physics-informed ACF prediction. (Right) Parameter-efficient adaptation to downstream tasks via lightweight temporal classifiers or bottleneck adapters.
       </p>
     </div>
   </div>
